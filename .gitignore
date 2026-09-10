@@ -12,6 +12,12 @@ dist
 dist-ssr
 *.local
 
+# Secrets. *.local above already covers .env.local; this catches a plain .env,
+# which is the easy mistake — it would otherwise be committed with the keys in it.
+.env
+.env.*
+!.env.example
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
