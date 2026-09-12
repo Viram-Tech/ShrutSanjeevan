@@ -1,82 +1,78 @@
 // -----------------------------------------------------------------------------
-// Live "total downloads" counter, backed by Firebase Firestore.
+// Live "total downloads" counter, backed by Supabase.
 //
-// One shared document (counters/downloads) holds a single number `total`.
-// Every visitor reads it live; each download bumps it by 1 atomically, so the
-// count is correct even when many people download at the same time.
+// One shared row (counters/'downloads') holds a single number. Every visitor
+// reads it; each download adds to it through bump_download_count(), a
+// `security definer` function — so a visitor can add to the total but cannot
+// set it. See the Download counter section of supabase/schema.sql.
 //
-// Firestore security rules to paste in the Firebase console (allows the world
-// to read the counter and to increment it, but nothing else):
+// This used to be a Firestore document. Moving it here removes the project's
+// last dependency on Firebase, puts the number in the same account as the
+// catalogue it counts, and makes it tamper-resistant: the old Firestore rule
+// let any client write any integer.
 //
-//   rules_version = '2';
-//   service cloud.firestore {
-//     match /databases/{database}/documents {
-//       match /counters/downloads {
-//         allow read: if true;
-//         allow write: if request.resource.data.keys().hasOnly(['total'])
-//                      && request.resource.data.total is int;
-//       }
-//     }
-//   }
-//
-// If FIREBASE.apiKey is empty in config.js, everything here is a no-op and the
-// UI simply hides the counter.
+// If SUPABASE is not configured (src/config.js), everything here is a no-op and
+// the UI simply hides the counter — same contract as before.
 // -----------------------------------------------------------------------------
-import { FIREBASE } from '../config.js'
+import { SUPABASE } from '../config.js'
 
-const enabled = Boolean(FIREBASE.apiKey && FIREBASE.projectId)
+const enabled = Boolean(SUPABASE.url && SUPABASE.anonKey)
 
-let docRefPromise = null
+// Mounted counters, so a download can refresh them without a live subscription.
+const listeners = new Set()
 
-// Lazily load Firebase and resolve the counter document reference. We import
-// the SDK dynamically so the ~100KB of Firebase code is only fetched when the
-// counter is actually used (i.e. on the Library page), not on every page.
-async function getDocRef() {
-  if (!enabled) return null
-  if (!docRefPromise) {
-    docRefPromise = (async () => {
-      const { initializeApp, getApps } = await import('firebase/app')
-      const { getFirestore, doc } = await import('firebase/firestore')
-      const app = getApps().length ? getApps()[0] : initializeApp(FIREBASE)
-      const db = getFirestore(app)
-      return doc(db, 'counters', 'downloads')
-    })()
-  }
-  return docRefPromise
+const rpc = async (fn, body) => {
+  const res = await fetch(`${SUPABASE.url}/rest/v1/rpc/${fn}`, {
+    method: 'POST',
+    headers: {
+      apikey: SUPABASE.anonKey,
+      Authorization: `Bearer ${SUPABASE.anonKey}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(body ?? {}),
+  })
+  if (!res.ok) throw new Error(`rpc ${fn}: HTTP ${res.status}`)
+  return res.json()
 }
 
-// Subscribe to the live total. Calls `onValue(number)` immediately with the
-// current value and again whenever it changes. Returns an unsubscribe function.
+// Report the total to `onValue`, then again after each local download so the
+// figure on screen reflects the visitor's own action immediately.
+//
+// Unlike the Firestore version this is not a live socket: the number is read
+// once on mount rather than streamed. The component animates it from zero and
+// nothing on the page depends on seeing other visitors' downloads in real time,
+// so a single request is the honest trade — no subscription held open on a
+// roadside connection. Returns an unsubscribe function, as before.
 export function subscribeDownloadCount(onValue) {
   if (!enabled) return () => {}
-  let unsub = () => {}
   let cancelled = false
-  ;(async () => {
-    const ref = await getDocRef()
-    if (!ref || cancelled) return
-    const { onSnapshot } = await import('firebase/firestore')
-    unsub = onSnapshot(
-      ref,
-      (snap) => onValue(snap.exists() ? snap.data().total || 0 : 0),
-      () => {} // ignore transient read errors; keep last known value
-    )
-  })()
+
+  const read = async () => {
+    try {
+      const total = await rpc('get_download_count')
+      if (!cancelled) onValue(Number(total) || 0)
+    } catch {
+      // Transient read failure: leave whatever is on screen alone.
+    }
+  }
+
+  read()
+  listeners.add(read)
   return () => {
     cancelled = true
-    unsub()
+    listeners.delete(read)
   }
 }
 
-// Record one download by atomically incrementing the shared total. Safe to call
+// Record one download by atomically adding to the shared total. Safe to call
 // repeatedly; failures (offline, counter off) are swallowed so downloads never
 // break because of analytics.
 export async function incrementDownloadCount(by = 1) {
   if (!enabled) return
   try {
-    const ref = await getDocRef()
-    if (!ref) return
-    const { setDoc, increment } = await import('firebase/firestore')
-    await setDoc(ref, { total: increment(by) }, { merge: true })
+    await rpc('bump_download_count', { amount: by })
+    // Refresh anything on screen with the new total.
+    for (const read of listeners) read()
   } catch {
     // Non-fatal: the download itself has already been triggered.
   }

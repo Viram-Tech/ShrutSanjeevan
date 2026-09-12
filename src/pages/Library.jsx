@@ -156,8 +156,12 @@ export default function Library() {
       } catch {
         window.open(ch.downloadUrl, '_blank', 'noopener')
       }
-      recordDownload({ ...selected, chapter: ch.title })
+      // Analytics stays per chapter — which chapter was taken is the useful
+      // part. The shared counter is tallied once below instead of once per
+      // chapter, so a 60-chapter book is one request, not sixty.
+      trackDownload({ ...selected, chapter: ch.title })
     }
+    if (list.length) incrementDownloadCount(list.length)
   }
 
   const downloadSelected = () => {

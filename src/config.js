@@ -58,30 +58,6 @@ export const GA_MEASUREMENT_ID = ''
 
 // -----------------------------------------------------------------------------
 // Live "total downloads" counter (Firebase / Firestore — free, no server).
-// -----------------------------------------------------------------------------
-// This powers the running total of manuscripts downloaded that is shown on the
-// Library page. It uses one shared number that every visitor reads and that
-// goes up by 1 on each download.
-//
-// SETUP (one time, ~5 minutes, no credit card):
-//   1. Go to https://console.firebase.google.com and create a project.
-//   2. In the project, open  Build -> Firestore Database  and click
-//      "Create database" (Production mode is fine).
-//   3. In  Firestore -> Rules , paste the rules shown in
-//      src/lib/downloadCounter.js (top comment) and Publish.
-//   4. Open  Project settings (gear icon) -> "Your apps" -> Web app (</>),
-//      register an app, and copy the "firebaseConfig" values into the object
-//      below. Only the four fields here are needed.
-//
-// Leave apiKey as '' to turn the live counter off (nothing else breaks — the
-// Library simply won't show the total).
-export const FIREBASE = {
-  apiKey: 'AIzaSyCQIlPcuF5SgUNZRc6MTjnxeQ-W_VHhXJs',
-  projectId: 'internproj3-bf45a',
-  appId: '1:668679564957:web:fc2464193ab6c1473b6e74',
-  // Usually "<projectId>.firebaseapp.com" — copy the value Firebase gives you.
-  authDomain: 'internproj3-bf45a.firebaseapp.com',
-}
 
 // -----------------------------------------------------------------------------
 // Sanity CMS — powers the Library (books + chapters + PDFs), edited by non-devs.

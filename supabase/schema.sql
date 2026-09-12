@@ -124,3 +124,68 @@ $$;
 grant execute on function
   public.search_books(text, text, text, text, text, boolean, int, int, real)
   to anon;
+
+
+-- ─────────────────────────────────────────────────────────────────────────────
+-- Download counter
+--
+-- One shared row holding the all-visitors total of manuscripts downloaded,
+-- shown on the Library page. This replaces a Firestore document: keeping it
+-- here means the trust's own Supabase project owns the number, alongside the
+-- catalogue it counts.
+--
+-- The anon key must be able to add to the total without being able to SET it.
+-- A `security definer` function is what makes that possible: visitors may call
+-- bump_download_count(), which can only ever add one, and have no write access
+-- to the table itself. (The Firestore rule this replaces allowed any client to
+-- write any integer, so the total could be forged from devtools.)
+-- ─────────────────────────────────────────────────────────────────────────────
+
+create table if not exists public.counters (
+  key   text primary key,
+  total bigint not null default 0
+);
+
+-- Seeded with the total carried over from the previous Firestore counter.
+insert into public.counters (key, total)
+values ('downloads', 35)
+on conflict (key) do nothing;
+
+alter table public.counters enable row level security;
+
+-- RLS is on with no policy granting direct access: the two security-definer
+-- functions below are the only way in, for reads as well as writes.
+drop policy if exists counters_read on public.counters;
+
+create or replace function public.bump_download_count(amount int default 1)
+returns bigint
+language sql
+security definer
+set search_path = public
+as $$
+  update public.counters
+     -- Clamp, so a crafted call cannot set the total to anything it likes. The
+     -- ceiling has to clear a real "download whole book", which tallies one per
+     -- chapter in a single call — Agam texts and commentaries run well past 50 —
+     -- so it is set high enough never to undercount a genuine download. It is
+     -- not a rate limit: anyone can call this repeatedly regardless, and the
+     -- clamp only bounds the damage of one request.
+     set total = total + greatest(1, least(amount, 500))
+   where key = 'downloads'
+  returning total;
+$$;
+
+-- security definer here too, so `anon` needs no privileges on the table itself:
+-- neither read nor write is possible except through these two functions.
+create or replace function public.get_download_count()
+returns bigint
+language sql
+stable
+security definer
+set search_path = public
+as $$
+  select coalesce((select total from public.counters where key = 'downloads'), 0);
+$$;
+
+grant execute on function public.bump_download_count(int) to anon, authenticated;
+grant execute on function public.get_download_count()    to anon, authenticated;
