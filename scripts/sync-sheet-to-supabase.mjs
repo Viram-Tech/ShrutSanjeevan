@@ -81,9 +81,17 @@ async function main() {
   console.log(`→ Fetching catalogue CSV…`)
   const res = await fetch(CSV_URL)
   if (!res.ok) fail(`Could not fetch the sheet (HTTP ${res.status}).`)
-  const books = rowsToBooks(parseCsv(await res.text()))
-  if (!books.length) fail('The sheet parsed to 0 rows — aborting so the table is not wiped.')
-  console.log(`→ Parsed ${books.length} rows.`)
+  const parsed = rowsToBooks(parseCsv(await res.text()))
+  if (!parsed.length) fail('The sheet parsed to 0 rows — aborting so the table is not wiped.')
+  // A usable title has at least one letter or digit in ANY script. The sheet
+  // carries a few rows whose name is only punctuation or a ditto mark ("-",
+  // "("); indexing those puts unfindable noise in the Archive.
+  const books = parsed.filter((b) => /[\p{L}\p{N}]/u.test(b.name || ''))
+  const skipped = parsed.length - books.length
+  console.log(
+    `→ Parsed ${parsed.length} rows` +
+      (skipped ? `; skipped ${skipped} without a real title.` : '.'),
+  )
 
   const syncedAt = new Date().toISOString()
   // De-duplicate by id (identical rows collapse) before writing.

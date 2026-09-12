@@ -6,10 +6,17 @@
 // visitor may type either script (the Archive page has a Hindi keyboard).
 //
 // To match across scripts we project everything to a single normalised Latin
-// "search key": Devanagari is transliterated to rough Latin, then both sides are
+// "search key": Indic text is transliterated to rough Latin, then both sides are
 // folded (diacritics stripped, common romanisation variants collapsed, spaces
 // removed). Typing "स्तवन" and typing "stavan" both become "stavan", so either
 // one finds both the English names and the Devanagari fields.
+//
+// Gujarati is handled too, and a large part of the catalogue is in it. Rather
+// than keep a second table in step with the Devanagari one, Gujarati is mapped
+// onto Devanagari first: the two Unicode blocks are the same Brahmic layout a
+// fixed 0x180 apart (ક U+0A95 -> क U+0915, the matras, the virama, all of it),
+// so one conversion makes every rule below apply to both. It also means typing
+// a Gujarati title finds the Devanagari and romanised records, and vice versa.
 //
 // This is deliberately phonetic-and-loose, not a scholarly transliteration —
 // the goal is that a human's guess at spelling matches the record.
@@ -41,9 +48,21 @@ const NUKTA = '़' // ़
 
 const isBoundary = (ch) => ch === undefined || /[\s।॥.,;:/()\-–—]/.test(ch)
 
-// Devanagari -> rough Latin, with word-final schwa (inherent 'a') deletion.
+// Gujarati (U+0A80-U+0AFF) -> Devanagari (U+0900-U+097F). The blocks are
+// parallel, so a single offset converts letters, matras, virama, anusvara and
+// digits alike. Code points Gujarati leaves unassigned simply map to Devanagari
+// ones the tables below ignore, which is harmless.
+const GUJARATI_TO_DEVANAGARI_OFFSET = 0x180
+const gujToDev = (input) =>
+  String(input).replace(/[\u0A80-\u0AFF]/gu, (ch) =>
+    String.fromCodePoint(ch.codePointAt(0) - GUJARATI_TO_DEVANAGARI_OFFSET),
+  )
+
+// Indic -> rough Latin, with word-final schwa (inherent 'a') deletion.
+// Gujarati is folded into Devanagari on the way in, so both scripts share one
+// set of rules.
 export function devToLatin(input) {
-  const s = [...String(input)]
+  const s = [...gujToDev(String(input))]
   let out = ''
   for (let i = 0; i < s.length; i += 1) {
     const c = s[i]
