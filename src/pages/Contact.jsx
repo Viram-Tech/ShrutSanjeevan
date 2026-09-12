@@ -2,6 +2,7 @@ import { useState } from 'react'
 import StringDivider from '../components/StringDivider.jsx'
 import Seo from '../components/Seo.jsx'
 import { seo } from '../data/seo.js'
+import { REQUEST_EMAIL } from '../config.js'
 
 const offices = [
   {
@@ -50,14 +51,55 @@ const emptyForm = { inquiryType: inquiryTypes[0], name: '', email: '', phone: ''
 export default function Contact() {
   const [form, setForm] = useState(emptyForm)
   const [sent, setSent] = useState(false)
+  const [copied, setCopied] = useState(false)
 
   const update = (key) => (e) => setForm({ ...form, [key]: e.target.value })
 
+  // The site has no mail backend, so the form composes the message and hands it
+  // to whatever email app the visitor already uses. They press send there — we
+  // never silently swallow a message, and they keep a copy in their own Sent
+  // folder. The trade-off is that a browser with no mail handler configured may
+  // do nothing at all, which is why the form is NOT cleared afterwards and the
+  // composed text stays available to copy.
+  const composed = () => {
+    const subject = form.subject.trim()
+      ? `${form.inquiryType}: ${form.subject.trim()}`
+      : form.inquiryType
+    const body = [
+      `Name: ${form.name.trim()}`,
+      `Email: ${form.email.trim()}`,
+      form.phone.trim() ? `Phone: ${form.phone.trim()}` : null,
+      `Reason: ${form.inquiryType}`,
+      '',
+      form.message.trim(),
+    ]
+      .filter((line) => line !== null)
+      .join('\n')
+    return { subject, body }
+  }
+
   const onSubmit = (e) => {
     e.preventDefault()
-    // Front-end only for now — will POST to the backend / email service later.
+    const { subject, body } = composed()
+    // encodeURIComponent, not encodeURI: subjects and messages contain & and #,
+    // which would otherwise cut the mailto short.
+    const href = `mailto:${REQUEST_EMAIL}?subject=${encodeURIComponent(
+      subject,
+    )}&body=${encodeURIComponent(body)}`
     setSent(true)
-    setForm(emptyForm)
+    window.location.href = href
+  }
+
+  const copyMessage = async () => {
+    const { subject, body } = composed()
+    try {
+      await navigator.clipboard.writeText(`${subject}\n\n${body}`)
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2000)
+    } catch {
+      // Clipboard blocked (insecure context, or the visitor declined) — the
+      // address is on screen either way, so there is nothing to recover from.
+    }
   }
 
   const handleDonate = () => {
@@ -187,9 +229,30 @@ export default function Contact() {
           </h2>
 
           {sent && (
-            <div className="mb-stack-sm flex items-center gap-2 rounded-lg bg-secondary-fixed bg-opacity-40 text-on-secondary-fixed p-3 font-body-md text-body-md">
-              <span className="material-symbols-outlined">check_circle</span>
-              Thank you — your message has been received.
+            <div className="mb-stack-sm rounded-lg bg-secondary-fixed bg-opacity-40 text-on-secondary-fixed p-3 font-body-md text-body-md">
+              <div className="flex items-center gap-2">
+                <span className="material-symbols-outlined">outgoing_mail</span>
+                Your email app should have opened with the message ready — press
+                send there to deliver it.
+              </div>
+              {/* A browser with no mail handler does nothing visible, so always
+                  offer the address and the text itself. */}
+              <div className="mt-2 flex flex-wrap items-center gap-2 text-body-sm">
+                <span>Nothing opened? Write to</span>
+                <a className="underline" href={`mailto:${REQUEST_EMAIL}`}>
+                  {REQUEST_EMAIL}
+                </a>
+                <button
+                  type="button"
+                  onClick={copyMessage}
+                  className="inline-flex items-center gap-1 rounded-md border border-warm px-2 py-1 hover:bg-surface transition-colors"
+                >
+                  <span className="material-symbols-outlined text-[16px]">
+                    {copied ? 'check' : 'content_copy'}
+                  </span>
+                  {copied ? 'Copied' : 'Copy message'}
+                </button>
+              </div>
             </div>
           )}
 
@@ -277,7 +340,7 @@ export default function Contact() {
                 <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>
                   send
                 </span>
-                Send Message
+                Send via email app
               </button>
             </div>
           </form>
