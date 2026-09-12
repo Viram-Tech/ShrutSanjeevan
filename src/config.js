@@ -11,7 +11,7 @@
 // canonical URLs to decide which address to list, so a wrong value here means
 // the wrong (or no) pages get indexed.
 // -----------------------------------------------------------------------------
-export const SITE_URL = 'https://shrutsanjeevan.org'
+export const SITE_URL = 'https://shrutsanjeevan.com'
 
 // Where book requests (from the Search page cart) are delivered.
 // WhatsApp number: country code + number, DIGITS ONLY (no +, spaces or dashes).

@@ -307,7 +307,7 @@ export default async function handler(req, res) {
         Authorization: `Bearer ${process.env.OPENROUTER_API_KEY}`,
         'Content-Type': 'application/json',
         // OpenRouter uses these for attribution on its dashboard.
-        'HTTP-Referer': process.env.SITE_URL || 'https://shrutsanjeevan.org',
+        'HTTP-Referer': process.env.SITE_URL || 'https://shrutsanjeevan.com',
         'X-Title': 'Shrutsanjeevan',
       },
       body: JSON.stringify({
