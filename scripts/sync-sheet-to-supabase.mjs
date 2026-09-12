@@ -68,11 +68,41 @@ function toRecord(b, syncedAt) {
   }
 }
 
-async function chunkedUpsert(supabase, records, size = 500) {
+// Supabase's gateway gives up well before Postgres does. A run that only
+// refreshes `synced_at` is cheap, but one where the search keys themselves
+// change — a transliteration fix, say — rewrites six GIN trigram indexes for
+// every row, and a big batch then times out mid-write.
+const isTransient = (message = '') =>
+  /timeout|gateway|502|503|504|fetch failed|ECONNRESET|socket hang up/i.test(
+    message,
+  )
+
+async function chunkedUpsert(supabase, records, size = 200) {
   for (let i = 0; i < records.length; i += size) {
     const batch = records.slice(i, i + size)
-    const { error } = await supabase.from('books').upsert(batch, { onConflict: 'id' })
-    if (error) throw new Error(`Upsert failed at row ${i}: ${error.message}`)
+    let failure = null
+
+    // Upserts are idempotent, so replaying a batch that timed out is always
+    // safe — the row either was written or was not, and either way the same
+    // payload lands. Back off rather than failing the whole catalogue.
+    for (let attempt = 1; attempt <= 5; attempt += 1) {
+      const { error } = await supabase
+        .from('books')
+        .upsert(batch, { onConflict: 'id' })
+      if (!error) {
+        failure = null
+        break
+      }
+      failure = error
+      if (!isTransient(error.message) || attempt === 5) break
+      const waitMs = 2 ** attempt * 1000
+      console.log(
+        `  batch at ${i} failed (${error.message}) — retry ${attempt}/4 in ${waitMs / 1000}s`,
+      )
+      await new Promise((resolve) => setTimeout(resolve, waitMs))
+    }
+
+    if (failure) throw new Error(`Upsert failed at row ${i}: ${failure.message}`)
     console.log(`  upserted ${Math.min(i + size, records.length)} / ${records.length}`)
   }
 }
