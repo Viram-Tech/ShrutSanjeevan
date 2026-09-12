@@ -42,6 +42,33 @@ const fieldClass =
   'w-full p-3 rounded-2xl border border-warm focus:border-secondary-fixed-dim focus:ring-2 focus:ring-secondary-fixed-dim focus:ring-opacity-50 transition-shadow bg-surface font-body-md text-body-md'
 const labelClass = 'block font-label-md text-label-md text-on-surface mb-base'
 
+// --- Deep links -------------------------------------------------------------
+// Read the filter set out of the query string. Facet values are checked against
+// the canonical lists so only options the dropdowns actually offer survive;
+// free-text fields (keyword, author, tikakaar) are passed through, since the
+// search folds them through translit.js anyway.
+const LANGUAGE_VALUES = LANGUAGES.map((l) => l.value)
+const GENRE_VALUES = GENRES.map((g) => g.value)
+
+// Case-insensitive so /search?language=sanskrit works as well as ?language=Sanskrit.
+const canonical = (raw, allowed) =>
+  allowed.find((v) => v.toLowerCase() === String(raw || '').trim().toLowerCase()) || ''
+
+function paramsToFilters(params) {
+  return {
+    ...emptyFilters,
+    keyword: params.get('q') || '',
+    language: canonical(params.get('language'), LANGUAGE_VALUES),
+    topic: canonical(params.get('topic'), GENRE_VALUES),
+    author: params.get('author') || '',
+    tikakaar: params.get('tikakaar') || '',
+    onlyCommentary: params.get('commentary') === '1',
+  }
+}
+
+const hasAnyFilter = (f) =>
+  Boolean(f.keyword || f.language || f.topic || f.author || f.tikakaar || f.onlyCommentary)
+
 export default function Search() {
   const { toggle, has } = useCart()
   const { t } = useLanguage()
@@ -51,19 +78,52 @@ export default function Search() {
   const [searchParams] = useSearchParams()
 
   // Clean, curated dropdown options (LANGUAGES/GENRES from catalogFacets).
-  const initialKeyword = searchParams.get('q') || ''
-  const initialFilters = { ...emptyFilters, keyword: initialKeyword }
+  //
+  // The whole filter set is readable from the URL, not just the keyword, so a
+  // link can arrive pre-filtered — that is what the chat assistant hands out
+  // when a visitor asks for something it cannot look up itself. Unknown facet
+  // values are dropped rather than trusted: a stale or mistyped ?language=
+  // would otherwise leave a dropdown showing an option it does not have and a
+  // filter the database will never match.
+  const initialFilters = useMemo(
+    () => paramsToFilters(searchParams),
+    // Seeds the state below once. Later query-string changes are handled by the
+    // sync effect further down, not here.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [],
+  )
 
   const [draft, setDraft] = useState(initialFilters)
   const [filters, setFilters] = useState(initialFilters)
   const [perPage, setPerPage] = useState(25)
   const [page, setPage] = useState(1)
   const [showAdvanced, setShowAdvanced] = useState(true)
-  const [hasSearched, setHasSearched] = useState(Boolean(initialKeyword))
+  const [hasSearched, setHasSearched] = useState(() => hasAnyFilter(initialFilters))
   const [hindiKb, setHindiKb] = useState(false)
   const [kbPage, setKbPage] = useState('letters')
   const [downloading, setDownloading] = useState(null)
   const keywordRef = useRef(null)
+
+  // Re-read the URL whenever the query string changes on an already-mounted
+  // page. React Router does not remount for a same-route navigation, so without
+  // this a second deep link — the chat assistant sending a visitor from
+  // /search?q=a to /search?q=b, or the browser Back button — would change the
+  // address bar and nothing else.
+  //
+  // Safe to do unconditionally because this page never writes the URL itself:
+  // every change to it comes from outside, so it always represents an intent to
+  // search for something new rather than an echo of what the visitor is typing.
+  const paramsKey = searchParams.toString()
+  const appliedParams = useRef(paramsKey)
+  useEffect(() => {
+    if (paramsKey === appliedParams.current) return // already seeded by useState
+    appliedParams.current = paramsKey
+    const next = paramsToFilters(new URLSearchParams(paramsKey))
+    setDraft(next)
+    setFilters(next)
+    setHasSearched(hasAnyFilter(next))
+    setPage(1)
+  }, [paramsKey])
 
   // Insert a character from the on-screen keyboard at the cursor position.
   const insertChar = (ch) => {

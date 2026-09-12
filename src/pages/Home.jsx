@@ -165,7 +165,13 @@ export default function Home() {
                       </span>
                     )}
                   </div>
-                  <span className="font-label-md text-label-md text-text-muted">{h.partnerRoles[p.role] || p.role}</span>
+                  {/* Smaller and tighter than the label-md token these used to
+                      use: at 13px with 0.14em tracking a two-word role filled
+                      the 9rem column and "Media Education Partner" broke across
+                      two lines, crowding the logo above it. */}
+                  <span className="font-label-md text-[10px] leading-[14px] tracking-[0.08em] text-text-muted">
+                    {h.partnerRoles[p.role] || p.role}
+                  </span>
                 </div>
               ))}
             </div>

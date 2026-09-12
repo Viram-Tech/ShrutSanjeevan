@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import { getLibrary } from '../lib/libraryStore.js'
 import PdfReaderModal from '../components/PdfReaderModal.jsx'
 import Dialog from '../components/Dialog.jsx'
@@ -37,12 +38,37 @@ const inBarSelectClass =
   'appearance-none cursor-pointer border-0 bg-transparent px-3 py-1.5 pr-9 font-label-md text-label-md text-text-muted transition-colors hover:text-oxblood focus:border-0 focus:outline-none focus:ring-0'
 
 export default function Library() {
-  const [keyword, setKeyword] = useState('')
-  const [language, setLanguage] = useState('')
-  const [topic, setTopic] = useState('')
+  // The toolbar's state is seedable from the query string, so a link can arrive
+  // already searched — this is what the chat assistant's button carries when a
+  // visitor asks for a book by name. Seeded here on mount, then kept in step by
+  // the sync effect below.
+  const [searchParams] = useSearchParams()
+  const [keyword, setKeyword] = useState(() => searchParams.get('q') || '')
+  const [language, setLanguage] = useState(() => searchParams.get('language') || '')
+  const [topic, setTopic] = useState(() => searchParams.get('topic') || '')
   const [sort, setSort] = useState('title')
   const [hindiKb, setHindiKb] = useState(false)
   const keywordRef = useRef(null)
+
+  // Re-read the URL when the query string changes on an already-mounted page.
+  // React Router does not remount for a same-route navigation, so without this
+  // a second link — the chat assistant sending a visitor from /library?q=a to
+  // /library?q=b, or the Back button — would change the address bar and nothing
+  // else. Mirrors the same effect on the Archive page.
+  //
+  // Safe unconditionally: this page never writes its own URL, so every change
+  // to it comes from outside and always means "search for something new".
+  const paramsKey = searchParams.toString()
+  const appliedParams = useRef(paramsKey)
+  useEffect(() => {
+    if (paramsKey === appliedParams.current) return // already seeded by useState
+    appliedParams.current = paramsKey
+    const next = new URLSearchParams(paramsKey)
+    setKeyword(next.get('q') || '')
+    setLanguage(next.get('language') || '')
+    setTopic(next.get('topic') || '')
+  }, [paramsKey])
+
   const { t } = useLanguage()
   const lp = t.libraryPage
   const [selected, setSelected] = useState(null)
@@ -72,6 +98,15 @@ export default function Library() {
     () => [...new Set(allBooks.map((b) => b.topic).filter(Boolean))].sort(),
     [allBooks]
   )
+
+  // A seeded ?language=/?topic= that no book carries would leave a dropdown
+  // showing an option it does not have and a filter that can only ever return
+  // nothing. Once the catalogue is in, drop anything the data cannot back.
+  useEffect(() => {
+    if (!allBooks.length) return
+    setLanguage((v) => (v && !languages.includes(v) ? '' : v))
+    setTopic((v) => (v && !topics.includes(v) ? '' : v))
+  }, [allBooks, languages, topics])
 
   const openBook = (b) => {
     setSelected(b)
