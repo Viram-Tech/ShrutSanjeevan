@@ -9,7 +9,7 @@ import { seo } from '../data/seo.js'
 
 // Builds the plain-text message the library receives.
 function buildMessage(items, name, phone, email, note) {
-  const lines = ['Book request from the Shrutsanjeevan website', '']
+  const lines = ['Book request from the Shrutsanjivan website', '']
   if (name) lines.push(`Name: ${name}`)
   if (phone) lines.push(`Phone: ${phone}`)
   if (email) lines.push(`Email: ${email}`)

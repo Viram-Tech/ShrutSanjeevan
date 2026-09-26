@@ -17,23 +17,17 @@ const heroStats = [
 // Portraits are static; the text (name, title, bio, facts) is translated.
 const gurudevImages = ['/images/gurudev-rajendrasuri.jpg', '/images/gurudev-ratnasundarsuri.jpg']
 
-// Partner list + logos mirrored from vk.jyot.in.
+// Partner list. Logos are supplied on transparent backgrounds so the marquee
+// band can stay white.
 const partners = [
-  { name: 'Jyot', role: 'Host', logo: '/images/partners/jyot.jpg' },
-  { name: 'Vivekananda International Foundation', role: 'Knowledge Partner', logo: '/images/partners/vif.jpg' },
-  { name: 'India Foundation', role: 'Knowledge Partner', logo: '/images/partners/india-foundation.jpg' },
-  { name: 'Gitarth Ganga', role: 'Research Partner', logo: '/images/partners/gitarth-ganga.jpg' },
-  { name: 'MNLU', role: 'Education Partner', logo: '/images/partners/mnlu.jpg' },
-  { name: 'Jain University', role: 'Education Partner', logo: '/images/partners/jain-university.png' },
-  { name: 'Nirma University', role: 'Education Partner', logo: '/images/partners/nirma-university.png' },
-  { name: 'Surana & Surana College of Law', role: 'Education Partner', logo: '/images/partners/surana.png' },
-  { name: 'JJ College of Law', role: 'Education Partner', logo: '/images/partners/jj.png' },
-  { name: 'NIMCJ', role: 'Media Education Partner', logo: '/images/partners/nimcj.jpg' },
-  { name: 'Geostrata', role: 'Support Partner', logo: '/images/partners/geostrata.jpg' },
-  { name: 'BMK Foundation', role: 'Supporters', logo: '/images/partners/bmk-foundation.jpg' },
-  { name: 'BCAS', role: 'Support Partner', logo: '/images/partners/bcas.png' },
-  { name: 'Pravarsh', role: 'Support Partner', logo: '/images/partners/pravarsh.png' },
+  { name: 'Shrut Sangam', logo: '/images/partners/shrut-sangam.webp' },
+  { name: 'Shrut Satkar', logo: '/images/partners/shrut-satkar.webp' },
+  { name: 'Aho! Shrutgyanam', logo: '/images/partners/aho-shrutgyanam.webp' },
 ]
+
+// Only three logos, so each marquee group repeats them enough times to cover a
+// wide viewport - otherwise the -50% scroll shows a gap between the two groups.
+const MARQUEE_REPEATS = 4
 
 function RevealList({ items }) {
   return (
@@ -124,7 +118,7 @@ export default function Home() {
               returns to the left as the full-opacity hero mark. */}
           <img
             src="/logo.png"
-            alt="Shrutsanjeevan"
+            alt="Shrutsanjivan"
             className="pointer-events-none absolute bottom-1/2 left-1/2 z-[5] w-[82%] max-w-[340px] -translate-x-1/2 translate-y-1/2 object-contain opacity-[0.24] md:left-[4%] md:w-[30%] md:max-w-[360px] md:translate-x-0 md:opacity-100"
           />
 
@@ -134,7 +128,7 @@ export default function Home() {
             {/* The visible title of this page is the logo image, which leaves the
                 page with no <h1> for search engines and screen readers. This
                 supplies one without changing the design. */}
-            <h1 className="sr-only">Shrutsanjeevan — {h.heroKicker}</h1>
+            <h1 className="sr-only">Shrutsanjivan — {h.heroKicker}</h1>
             <p className="eyebrow mb-4 self-center md:self-start">{h.heroKicker}</p>
             <p className="font-headline-md text-[26px] leading-snug tracking-tight text-ink sm:text-[30px] md:text-[34px] md:tracking-normal">
               {h.heroLead}
@@ -144,36 +138,24 @@ export default function Home() {
       </section>
 
 
-      {/* Partner marquee — the "logo loop" keeps its light band in both themes
-          (partner logos are supplied on white). */}
-      <section className="keep-light w-full overflow-hidden border-t border-[#e7dcc7] bg-[#faf7f1] py-6">
+      {/* Partner marquee - the "logo loop" keeps its white band in both themes
+          (partner logos are supplied on transparent backgrounds). */}
+      <section className="keep-light w-full overflow-hidden border-y border-[#e7dcc7] bg-white py-7">
         <div className="marquee-track">
           {[0, 1].map((g) => (
-            <div key={g} className="flex items-end gap-16 pr-16">
-              {partners.map((p) => (
-                <div key={p.name} className="flex w-36 shrink-0 flex-col items-center gap-2.5 text-center">
-                  <div className="flex h-11 items-center justify-center">
-                    {p.logo ? (
-                      <img
-                        src={p.logo}
-                        alt={p.name}
-                        className="max-h-11 w-auto max-w-[7rem] object-contain"
-                      />
-                    ) : (
-                      <span className="font-headline-md text-[15px] leading-snug text-[#5c4326] line-clamp-3">
-                        {p.name}
-                      </span>
-                    )}
+            <div key={g} className="flex items-center gap-56 pr-56">
+              {Array.from({ length: MARQUEE_REPEATS }).flatMap((_, r) =>
+                partners.map((p) => (
+                  <div key={`${p.name}-${r}`} className="flex shrink-0 items-center justify-center">
+                    <img
+                      src={p.logo}
+                      alt={p.name}
+                      loading="lazy"
+                      className="h-14 w-auto max-w-[11rem] object-contain"
+                    />
                   </div>
-                  {/* Smaller and tighter than the label-md token these used to
-                      use: at 13px with 0.14em tracking a two-word role filled
-                      the 9rem column and "Media Education Partner" broke across
-                      two lines, crowding the logo above it. */}
-                  <span className="font-label-md text-[10px] leading-[14px] tracking-[0.08em] text-text-muted">
-                    {h.partnerRoles[p.role] || p.role}
-                  </span>
-                </div>
-              ))}
+                )),
+              )}
             </div>
           ))}
         </div>
@@ -297,8 +279,8 @@ export default function Home() {
       />
 
       {/* Blessings of the Gurudevs — just before the footer */}
-      <section className="mx-auto w-full max-w-container-max px-margin-mobile pb-32 pt-24 lg:pb-40 lg:pt-32">
-        <div className="mb-stack-md text-center">
+      <section className="mx-auto w-full max-w-container-max px-margin-mobile pb-20 pt-16 lg:pb-40 lg:pt-32">
+        <div className="mb-6 text-center lg:mb-stack-md">
           <p className="eyebrow mb-3">{h.reverence}</p>
           <h2 className="font-headline-lg text-headline-lg text-sepia">{h.gurudevsTitle}</h2>
         </div>
@@ -312,16 +294,16 @@ export default function Home() {
             ))}
           </defs>
         </svg>
-        <div className="mx-auto flex max-w-5xl flex-col gap-stack-lg">
+        <div className="mx-auto flex max-w-5xl flex-col gap-10 lg:gap-stack-lg">
           {h.gurudevs.map((g, i) => (
             <div
               key={g.name}
-              className={`flex flex-col gap-6 lg:min-h-[420px] lg:items-center ${
+              className={`flex flex-col gap-4 lg:min-h-[420px] lg:items-center lg:gap-6 ${
                 i % 2 === 1 ? 'lg:flex-row-reverse' : 'lg:flex-row'
               }`}
             >
               {/* Portrait — organic blob frame */}
-              <div className="relative mx-auto w-full max-w-[460px] self-center lg:mx-0 lg:w-[42%] lg:max-w-[470px] lg:shrink-0">
+              <div className="relative mx-auto w-full max-w-[220px] self-center sm:max-w-[300px] lg:mx-0 lg:w-[42%] lg:max-w-[470px] lg:shrink-0">
                 <div
                   aria-hidden="true"
                   className="pointer-events-none absolute inset-[-10%]"
@@ -344,12 +326,12 @@ export default function Home() {
                 }`}
               >
                 <div>
-                  <p className="eyebrow mb-2 break-words text-brass">{g.title}</p>
+                  <p className="eyebrow eyebrow-tight mb-2 break-words text-brass">{g.title}</p>
                   <h3 className="font-headline-md text-[24px] leading-snug text-sepia break-words">{g.name}</h3>
                 </div>
                 <p className="max-w-2xl text-sm leading-relaxed text-text-muted">{g.bio}</p>
                 {g.facts.length > 0 && (
-                  <div className="flex flex-wrap gap-x-8 gap-y-3 border-t border-warm pt-4">
+                  <div className="flex flex-wrap gap-x-6 gap-y-3 border-t border-warm pt-4 lg:gap-x-8">
                     {g.facts.map((f) => (
                       <div key={f.label}>
                         <p className="font-headline-md text-[19px] leading-none text-oxblood">{f.value}</p>

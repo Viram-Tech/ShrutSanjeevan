@@ -244,7 +244,7 @@ export default function Search() {
       const href = URL.createObjectURL(blob)
       const a = document.createElement('a')
       a.href = href
-      a.download = `shrutsanjeevan-archive.${fmt}`
+      a.download = `shrutsanjivan-archive.${fmt}`
       document.body.appendChild(a)
       a.click()
       a.remove()

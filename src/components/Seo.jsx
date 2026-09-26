@@ -48,7 +48,7 @@ export default function Seo({ title, description, image = DEFAULT_IMAGE, type = 
     setMeta('description', description)
     setTag('link', 'rel', 'canonical', 'href', url)
 
-    setProp('og:site_name', 'Shrutsanjeevan')
+    setProp('og:site_name', 'Shrutsanjivan')
     setProp('og:type', type)
     setProp('og:url', url)
     setProp('og:title', title)

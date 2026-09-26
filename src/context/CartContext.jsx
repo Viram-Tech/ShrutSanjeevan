@@ -5,7 +5,7 @@ import { createContext, useContext, useEffect, useMemo, useState } from 'react'
 // Persisted to localStorage so it survives navigation and page reloads.
 
 const CartContext = createContext(null)
-const STORAGE_KEY = 'shrutsanjeevan.requestCart'
+const STORAGE_KEY = 'shrutsanjivan.requestCart'
 
 export function CartProvider({ children }) {
   const [items, setItems] = useState(() => {

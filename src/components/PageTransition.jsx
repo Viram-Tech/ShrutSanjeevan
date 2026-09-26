@@ -1,6 +1,6 @@
 import { motion } from 'motion/react'
 
-// The seven ornate floating folios cut straight from the Shrutsanjeevan logo.
+// The seven ornate floating folios cut straight from the Shrutsanjivan logo.
 const FOLIOS = [
   '/images/folios/page-1.png',
   '/images/folios/page-2.png',

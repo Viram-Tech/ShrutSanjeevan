@@ -27,8 +27,8 @@ export default function LanguageModal() {
           </button>
         )}
 
-        <img src="/logo.png" alt="Shrutsanjeevan" className="mx-auto mb-4 h-16 w-auto" />
-        <p className="eyebrow mb-3">Shrutsanjeevan</p>
+        <img src="/logo.png" alt="Shrutsanjivan" className="mx-auto mb-4 h-16 w-auto" />
+        <p className="eyebrow mb-3">Shrutsanjivan</p>
         <h2 className="mb-6 font-headline-md text-headline-md text-sepia">
           Select a language
           <span className="mt-1 block text-base text-text-muted">भाषा चुनें &middot; ભાષા પસંદ કરો</span>

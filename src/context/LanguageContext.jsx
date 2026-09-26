@@ -9,7 +9,7 @@ export const LANGUAGES = [
 ]
 
 const LanguageContext = createContext(null)
-const STORAGE_KEY = 'shrutsanjeevan.lang'
+const STORAGE_KEY = 'shrutsanjivan.lang'
 
 export function LanguageProvider({ children }) {
   // `null` until the visitor picks a language (triggers the first-visit modal).

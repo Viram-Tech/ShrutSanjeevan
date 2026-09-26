@@ -16,7 +16,7 @@ npm create sanity@latest
 ```
 
 - Sign in / create a Sanity account (free).
-- Create a **new project**, e.g. `shrutsanjeevan-library`.
+- Create a **new project**, e.g. `shrutsanjivan-library`.
 - Dataset name: `production` (public read).
 - Pick the "Clean project with no predefined schemas" template.
 - Choose the default project output path.

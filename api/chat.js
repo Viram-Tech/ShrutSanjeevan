@@ -157,7 +157,7 @@ async function runTool(name, args) {
 
 function systemPrompt(lang) {
   const language = LANGUAGE_NAMES[lang] || 'English'
-  return `You are the guide for the Shrutsanjeevan website — a Jain manuscript archive run by the Ratnatrayee Trust. You help visitors find their way around the site.
+  return `You are the guide for the Shrutsanjivan website — a Jain manuscript archive run by the Ratnatrayee Trust. You help visitors find their way around the site.
 
 Reply in ${language}. If the visitor writes in a different language, reply in the language they used.
 
@@ -307,8 +307,8 @@ export default async function handler(req, res) {
         Authorization: `Bearer ${process.env.OPENROUTER_API_KEY}`,
         'Content-Type': 'application/json',
         // OpenRouter uses these for attribution on its dashboard.
-        'HTTP-Referer': process.env.SITE_URL || 'https://shrutsanjeevan.com',
-        'X-Title': 'Shrutsanjeevan',
+        'HTTP-Referer': process.env.SITE_URL || 'https://www.shrutsanjivan.com',
+        'X-Title': 'Shrutsanjivan',
       },
       body: JSON.stringify({
         model: REQUEST_MODELS[0],

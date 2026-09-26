@@ -222,6 +222,19 @@ html[lang='hi'] .eyebrow,
 html[lang='gu'] .eyebrow {
   letter-spacing: 0.06em;
 }
+
+/* The gurudevs' honorific titles run to ~50 characters. At the eyebrow's 0.32em
+   tracking that is far wider than a phone, so it wraps to three sparse lines and
+   dominates the card. Tightening only these keeps the letterspaced look
+   everywhere else untouched. Defined after .eyebrow so it wins the cascade — a
+   Tailwind `tracking-` utility would not, since .eyebrow comes after
+   @tailwind utilities in this file. */
+@media (max-width: 639px) {
+  .eyebrow-tight {
+    letter-spacing: 0.14em;
+    font-size: 11px;
+  }
+}
 html[lang='hi'] [class*='tracking-'],
 html[lang='gu'] [class*='tracking-'],
 html[lang='hi'] .menu span,

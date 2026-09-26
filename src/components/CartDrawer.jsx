@@ -5,7 +5,7 @@ import { REQUEST_WHATSAPP, REQUEST_EMAIL } from '../config.js'
 // Builds the plain-text message the library receives, listing every requested
 // book plus the requester's name and optional note.
 function buildMessage(items, name, note) {
-  const lines = ['Book request from the Shrutsanjeevan website', '']
+  const lines = ['Book request from the Shrutsanjivan website', '']
   if (name) lines.push(`Name: ${name}`, '')
   lines.push('Requested books:')
   items.forEach((b, i) => {

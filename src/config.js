@@ -11,7 +11,7 @@
 // canonical URLs to decide which address to list, so a wrong value here means
 // the wrong (or no) pages get indexed.
 // -----------------------------------------------------------------------------
-export const SITE_URL = 'https://shrutsanjeevan.com'
+export const SITE_URL = 'https://www.shrutsanjivan.com'
 
 // Where book requests (from the Search page cart) are delivered.
 // WhatsApp number: country code + number, DIGITS ONLY (no +, spaces or dashes).
@@ -68,7 +68,7 @@ export const GA_MEASUREMENT_ID = ''
 //
 // SETUP (one time, ~15 minutes — see studio/README.md for the full walkthrough):
 //   1. In a NEW folder run:  npm create sanity@latest
-//      Sign in, create a project (e.g. "shrutsanjeevan-library"), dataset
+//      Sign in, create a project (e.g. "shrutsanjivan-library"), dataset
 //      "production". This scaffolds a Studio app.
 //   2. Copy studio/schemas/book.js from this repo into the Studio's schema
 //      folder and register it (see studio/README.md).

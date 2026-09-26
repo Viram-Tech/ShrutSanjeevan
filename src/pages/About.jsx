@@ -28,9 +28,14 @@ export default function About() {
       {/* Image card */}
       <section className="mb-stack-lg">
         <div className="overflow-hidden rounded-[24px]">
-          <img
-            src="/images/about-garden-mural.jpg"
-            alt="Illustrated Indian palace garden with peacocks and cranes"
+          <video
+            src="/images/about-rose-wide.mp4"
+            poster="/images/about-rose-wide-poster.jpg"
+            autoPlay
+            muted
+            playsInline
+            preload="metadata"
+            aria-label="A rose growing from the pages of a glowing book"
             className="h-[240px] w-full object-cover object-center md:h-[420px]"
           />
         </div>

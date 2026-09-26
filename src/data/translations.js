@@ -6,7 +6,7 @@ export const translations = {
       open: 'Open the site guide',
       close: 'Close the site guide',
       title: 'Site guide',
-      subtitle: 'Finding your way around Shrutsanjeevan',
+      subtitle: 'Finding your way around Shrutsanjivan',
       greeting: 'Ask me where to find something on this site, or how requesting a manuscript works.',
       suggestions: ['How do I search the archive?', 'How do I request a manuscript?', 'Can I read books online?'],
       placeholder: 'Ask about this site\u2026',
@@ -22,7 +22,7 @@ export const translations = {
     theme: { dark: 'Dark mode', light: 'Light mode' },
     home: {
       heroLead:
-        'Shrutsanjeevan, an initiative of the Ratnatrayee Trust, is devoted to rejuvenating our ancient manuscript treasure — transcribing, researching, editing and digitizing the scriptural heritage so that knowledge once locked in bhandars can be read by anyone, anywhere.',
+        'Shrutsanjivan, an initiative of the Ratnatrayee Trust, is devoted to rejuvenating our ancient manuscript treasure — transcribing, researching, editing and digitizing the scriptural heritage so that knowledge once locked in bhandars can be read by anyone, anywhere.',
       heroKicker: 'Reviving ancient manuscripts',
       heroCta: 'Browse the archive',
       supportOf: 'With the support of',
@@ -124,10 +124,10 @@ export const translations = {
       title: 'Our story, vision & values',
       lede: 'Learn about our commitment to preserving India’s ancient knowledge heritage — and opening it to the world.',
       quote:
-        'Shrutsanjeevan works tirelessly to research, preserve and upgrade the scriptural heritage — transcribing, editing and digitizing rare manuscripts so that timeless wisdom reaches every seeker, anywhere.',
+        'Shrutsanjivan works tirelessly to research, preserve and upgrade the scriptural heritage — transcribing, editing and digitizing rare manuscripts so that timeless wisdom reaches every seeker, anywhere.',
       aboutLabel: 'About us',
       aboutPara1:
-        'An initiative of the Ratnatrayee Trust, Shrutsanjeevan gathers, researches, edits, preserves and publishes ancient granths — classified into the Granthank and Granthratna collections. By pairing meticulous scholarship with modern technology, it opens knowledge once locked in bhandars to anyone, anywhere.',
+        'An initiative of the Ratnatrayee Trust, Shrutsanjivan gathers, researches, edits, preserves and publishes ancient granths — classified into the Granthank and Granthratna collections. By pairing meticulous scholarship with modern technology, it opens knowledge once locked in bhandars to anyone, anywhere.',
       aboutPara2:
         'The work flourishes under the blessings of Prashantmurti Gachchhadhipati Pujyapad Acharyadev Shrimad Vijay Rajendrasurishwarji Maharaja and Padma Bhushan awardee Pujyapad Acharyadev Shrimad Vijay Ratnasundarsurishwarji Maharaja.',
       stats: [
@@ -145,7 +145,7 @@ export const translations = {
         title: 'Mission',
         statement:
           'The ancient tradition of knowledge is a divine heritage of India — capable of guiding us spiritually, socially, culturally, scientifically, educationally and historically. To present this treasure in a modern, refined form and thereby offer guidance to society.',
-        body: 'Through transcription, research, editing, preservation and archival collection, Shrutsanjeevan brings ancient granths to life in print and online — classified as Granthank and Granthratna collections and freely accessible to scholars, seekers and devotees.',
+        body: 'Through transcription, research, editing, preservation and archival collection, Shrutsanjivan brings ancient granths to life in print and online — classified as Granthank and Granthratna collections and freely accessible to scholars, seekers and devotees.',
       },
     },
   },
