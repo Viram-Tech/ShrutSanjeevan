@@ -353,7 +353,7 @@ export default function Contact() {
         <p className="eyebrow mb-3 text-brass">Dravya Sanjivan</p>
         <h2 className="mb-stack-sm font-headline-md text-headline-md text-sepia">Support the mission</h2>
         <p className="mb-stack-md max-w-3xl font-body-md text-body-md text-text-muted">
-          Through Shrutsanjeevan&rsquo;s initiatives, shravaks and sanghs — through their Gyan Dravya —
+          Through Shrutsanjivan&rsquo;s initiatives, shravaks and sanghs — through their Gyan Dravya —
           have an auspicious opportunity to serve the publication and preservation of priceless
           scriptures. Contributions may also go towards scanning, digitization and related projects.
         </p>
@@ -415,7 +415,7 @@ export default function Contact() {
 
         <p className="mt-stack-md font-body-md text-sm italic text-text-muted">
           Your sacred donation is an auspicious offering (Aahuti) in this &ldquo;Pushya&rdquo; Yagna
-          begun by Shrutsanjeevan.
+          begun by Shrutsanjivan.
         </p>
 
         {/* Give online — Razorpay integration point (same block) */}

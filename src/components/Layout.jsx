@@ -121,7 +121,7 @@ export default function Layout() {
         {/* Left: logo + wordmark */}
         <Link
           to="/"
-          aria-label="Shrutsanjeevan"
+          aria-label="Shrutsanjivan"
           className="flex min-w-0 flex-1 items-center gap-1.5 sm:gap-3"
         >
           {/* Logo video: white background dropped via multiply onto the glass,
@@ -142,7 +142,7 @@ export default function Layout() {
             />
           </span>
           <span className="truncate font-headline-lg text-[15px] leading-[1.35] text-sepia sm:text-[24px]">
-            Shrutsanjeevan
+            Shrutsanjivan
           </span>
         </Link>
 

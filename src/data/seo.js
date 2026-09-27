@@ -16,57 +16,57 @@
 
 export const seo = {
   home: {
-    title: 'Shrutsanjeevan — Reviving Ancient Jain Manuscripts',
+    title: 'Shrutsanjivan — Reviving Ancient Jain Manuscripts',
     description:
       'An initiative of the Ratnatrayee Trust transcribing, researching, editing and digitizing rare Jain manuscripts, so knowledge once locked in bhandars can be read by anyone.',
     image: '/images/manuscript-cover.jpg',
   },
 
   about: {
-    title: 'About Us — Our Story, Vision & Values | Shrutsanjeevan',
+    title: 'About Us — Our Story, Vision & Values | Shrutsanjivan',
     description:
-      'Shrutsanjeevan gathers, researches, edits, preserves and publishes ancient granths — the Granthank and Granthratna collections — opening India’s scriptural heritage to the world.',
-    image: '/images/about-garden-mural.jpg',
+      'Shrutsanjivan gathers, researches, edits, preserves and publishes ancient granths — the Granthank and Granthratna collections — opening India’s scriptural heritage to the world.',
+    image: '/images/about-rose-wide-poster.jpg',
   },
 
   search: {
-    title: 'Search the Manuscript Archive | Shrutsanjeevan',
+    title: 'Search the Manuscript Archive | Shrutsanjivan',
     description:
       'Search a catalogue of Jain manuscripts by title, author (karta), tikakaar, language and subject — then request the granths you need from the kendra.',
     image: '/images/manuscript-texture-2.jpg',
   },
 
   library: {
-    title: 'Digital Library — Read & Download Manuscripts | Shrutsanjeevan',
+    title: 'Digital Library — Read & Download Manuscripts | Shrutsanjivan',
     description:
       'Read a preview of each digitized scripture online, or download the full text as a PDF. A growing reading room of Jain granths, free for every seeker.',
     image: '/images/manuscript-cover.jpg',
   },
 
   contact: {
-    title: 'Contact the Kendra | Shrutsanjeevan',
+    title: 'Contact the Kendra | Shrutsanjivan',
     description:
-      'Get in touch with Shrutsanjeevan about manuscript requests, research collaboration or supporting the work of preserving Jain scriptural heritage.',
+      'Get in touch with Shrutsanjivan about manuscript requests, research collaboration or supporting the work of preserving Jain scriptural heritage.',
     image: '/images/garden-strip.jpg',
   },
 
   // Kept out of search: a visitor's own request list is different for everyone
   // and has nothing useful to show someone arriving from Google.
   requests: {
-    title: 'Your Request List | Shrutsanjeevan',
+    title: 'Your Request List | Shrutsanjivan',
     description: 'Review the manuscripts you would like to request, then send the list to the kendra.',
     noindex: true,
   },
 
   // An internal demo of the intro animation — not part of the public site.
   introDemo: {
-    title: 'Intro Demo | Shrutsanjeevan',
+    title: 'Intro Demo | Shrutsanjivan',
     description: 'Internal preview of the site intro animation.',
     noindex: true,
   },
 
   notFound: {
-    title: 'Page Not Found | Shrutsanjeevan',
+    title: 'Page Not Found | Shrutsanjivan',
     description: 'This page does not exist. Browse the archive or the digital library instead.',
     noindex: true,
   },

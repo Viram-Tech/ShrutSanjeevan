@@ -18,7 +18,7 @@ export const PAGES = [
     path: '/',
     name: 'Home',
     covers:
-      'Introduction to Shrutsanjeevan, an initiative of the Ratnatrayee Trust devoted to rejuvenating ancient manuscripts — transcribing, researching, editing and digitizing scriptural heritage. Shows the partners who support the work and a three-step summary of how searching and requesting works.',
+      'Introduction to Shrutsanjivan, an initiative of the Ratnatrayee Trust devoted to rejuvenating ancient manuscripts — transcribing, researching, editing and digitizing scriptural heritage. Shows the partners who support the work and a three-step summary of how searching and requesting works.',
   },
   {
     path: '/about',

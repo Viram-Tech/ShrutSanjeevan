@@ -1,5 +1,5 @@
 -- =============================================================================
--- Shrutsanjeevan archive — Supabase schema for server-side search.
+-- Shrutsanjivan archive — Supabase schema for server-side search.
 -- Run this ONCE in the Supabase SQL Editor (Dashboard -> SQL Editor -> New query).
 -- Safe to re-run: everything uses "if not exists" / "create or replace".
 -- =============================================================================

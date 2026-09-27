@@ -48,8 +48,8 @@ export default function Footer() {
           {/* Left — brand + CTA */}
           <div>
             <div className="mb-8 flex items-center gap-3">
-              <img src="/logo.png" alt="Shrutsanjeevan" className="h-11 w-auto" />
-              <span className="font-headline-md text-[24px] text-sepia">Shrutsanjeevan</span>
+              <img src="/logo.png" alt="Shrutsanjivan" className="h-11 w-auto" />
+              <span className="font-headline-md text-[24px] text-sepia">Shrutsanjivan</span>
             </div>
             <Link
               to="/contact"
@@ -87,7 +87,7 @@ export default function Footer() {
         {/* Bottom bar */}
         <div className="mt-stack-lg flex flex-col items-center gap-4 border-t border-warm pt-6 md:flex-row md:justify-between">
           <span className="text-[15px] text-text-muted">
-            © 2026 Shrutsanjeevan. All rights reserved.
+            © 2026 Shrutsanjivan. All rights reserved.
           </span>
           <nav className="flex flex-wrap items-center justify-center gap-x-7 gap-y-2">
             {navLinks.map((l) => (
